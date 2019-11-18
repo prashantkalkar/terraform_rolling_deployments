@@ -1,0 +1,32 @@
+{
+  "variables": {
+    "aws_profile" : "personal"
+  },
+  "builders": [{
+    "type": "amazon-ebs",
+    "region": "us-east-1",
+    "profile" : "{{user `aws_profile`}}",
+    "source_ami_filter": {
+      "filters": {
+        "virtualization-type": "hvm",
+        "name": "ubuntu/images/*ubuntu-xenial-16.04-amd64-server-*",
+        "root-device-type": "ebs"
+      },
+      "owners": ["099720109477"],
+      "most_recent": true
+    },
+    "instance_type": "t2.micro",
+    "ssh_username": "ubuntu",
+    "ami_name": "nginx-ami",
+    "force_deregister" : true,
+    "force_delete_snapshot": true
+  }],
+  "provisioners" : [
+    {
+      "type": "ansible",
+      "playbook_file": "./nginx.yml",
+      "ansible_env_vars":
+      [ "ANSIBLE_SSH_ARGS='-o IdentitiesOnly=yes'" ]
+    }
+  ]
+}

@@ -19,8 +19,8 @@ provider "aws" {
 
 resource "aws_launch_configuration" "rolling_deployment_launch_config" {
   name_prefix = "rolling_deployment_lc_"
-  // Sample ami with nginx running on it.
-  image_id = "ami-00e58f8044c7f8ad1" // TODO - Create AMI.
+  // AMI with nginx installed. Refer nginx.json packer configuration for creating it.
+  image_id = "ami-0db98b8e9050e18af"
   instance_type = "t3.nano"
 
   security_groups = [aws_security_group.rolling_deployment_instance_sg.id]
@@ -39,8 +39,8 @@ resource "aws_autoscaling_group" "rolling_deployment_asg" {
   name_prefix          = "rolling_deployment_asg_"
   launch_configuration = aws_launch_configuration.rolling_deployment_launch_config.name
   load_balancers = [aws_elb.rolling_deployment_elb.name]
+  availability_zones = data.aws_availability_zones.zones.names
 
-  // Generally equal to availability zones available in the region
   min_size             = 3
   max_size             = 3
 
