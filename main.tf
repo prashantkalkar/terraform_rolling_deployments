@@ -48,6 +48,9 @@ resource "aws_autoscaling_group" "rolling_deployment_asg" {
   health_check_grace_period = 300
   health_check_type         = "ELB"
 
+  wait_for_capacity_timeout = "10m"
+  wait_for_elb_capacity = 3 // generally set to ASG desired capacity
+
   lifecycle {
     create_before_destroy = true
   }
